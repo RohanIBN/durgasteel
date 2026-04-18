@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GRN Receipt | SteelFlow ERP</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet" />
+  <style>
+:root {
+  --bg-main: #eaf1fb;
+  --bg-panel: #ffffff;
+  --bg-soft: #edf4ff;
+  --bg-tint: linear-gradient(135deg, #f6faff 0%, #e7effb 100%);
+  --line: #c8d5e8;
+  --text-main: #102a43;
+  --text-soft: #4f627b;
+  --accent: #2563eb;
+  --accent-2: #1d4ed8;
+  --ok: #22c55e;
+  --warn: #f59e0b;
+  --bad: #ef4444;
+  --shadow: 0 10px 30px rgba(37, 99, 235, 0.10);
+  --tr: all .28s ease;
+}
+* { box-sizing: border-box; }
+html, body { height: 100%; }
+body {
+  margin: 0;
+  font-family: Inter, sans-serif;
+  color: var(--text-main);
+  background: linear-gradient(180deg, #f2f7ff 0%, var(--bg-main) 100%);
+  animation: pageFade .35s ease-out;
+}
+.app { display: flex; min-height: 100vh; }
+.sidebar { position: fixed; inset: 0 auto 0 0; width: 282px; overflow-y: auto; background: #eef4fd; border-right: 1px solid var(--line); padding: 1rem .95rem; }
+.brand { display:flex; align-items:center; justify-content:space-between; gap:.6rem; padding:.2rem .35rem 1rem; }
+.brand-left { display:flex; align-items:center; gap:.7rem; }
+.brand-mark { width:42px; height:42px; border-radius:12px; display:inline-flex; align-items:center; justify-content:center; background: #e8f1fb; border:1px solid #c8d8ea; box-shadow:none; }
+.brand-mark i { color: var(--accent); }
+.brand-title { font-weight:700; font-size:1.02rem; letter-spacing:.01em; }
+.brand-sub { color: var(--text-soft); font-size:.78rem; }
+.menu-group { margin-bottom: .85rem; }
+.menu-group-label {
+  width: 100%; display:flex; align-items:center; justify-content:space-between; gap:.55rem; padding:.8rem .84rem;
+  color: #3e4c62; font-size:.8rem; font-weight:700; border-radius:12px; border:1px solid var(--line);
+  background: #fff; text-transform:uppercase; letter-spacing:.04em;
+}
+.menu-group-label:hover {
+  background: #e3edfc;
+  color: var(--accent-2);
+}
+.menu-group-title {
+  display:flex; align-items:center; gap:.55rem;
+  min-width: 0;
+}
+.menu-group-title .txt { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.menu-group-links { padding-left: .15rem; margin-top: .4rem; display:none; }
+.menu-group.open .menu-group-links { display:block; }
+.menu-chevron { transition: var(--tr); }
+.menu-group.open .menu-chevron { transform: rotate(90deg); }
+.nav-link.erp-link { color:#334e68; border-radius:10px; padding:.68rem .82rem; margin-bottom:.28rem; display:flex; gap:.72rem; align-items:center; transition:var(--tr); font-size:.92rem; }
+.nav-link.erp-link:hover { color:var(--accent-2); background:#e2ecfb; transform:translateX(2px); }
+.nav-link.erp-link.active { color:var(--accent-2); background:#dbe8fb; border:1px solid #b8cde6; box-shadow:0 4px 12px rgba(37,99,235,.12); font-weight:700; }
+.submenu-link { margin-left: .35rem; padding-left: .7rem; }
+.sidebar-footer { margin-top:1rem; padding:.9rem; border:1px solid var(--line); border-radius:12px; background:#fff; }
+.main { width: calc(100% - 282px); margin-left: 282px; padding:1.1rem 1.6rem 2.2rem; }
+.app.sidebar-collapsed .sidebar { width: 84px; padding: .9rem .55rem; }
+.app.sidebar-collapsed .brand-copy, .app.sidebar-collapsed .txt, .app.sidebar-collapsed .sidebar-footer, .app.sidebar-collapsed .menu-chevron { display:none; }
+.app.sidebar-collapsed .menu-group-links { display:none !important; }
+.app.sidebar-collapsed .menu-group-label { justify-content:center; padding:.72rem; }
+.app.sidebar-collapsed .menu-group-title { justify-content:center; }
+.app.sidebar-collapsed .submenu-link { margin-left:0; padding-left:.7rem; }
+.app.sidebar-collapsed .main { width: calc(100% - 84px); margin-left: 84px; }
+.topbar { background: var(--bg-tint); border:1px solid var(--line); border-radius:12px; padding:.85rem 1rem; margin-bottom:1rem; position:sticky; top:10px; z-index:10; box-shadow:0 6px 18px rgba(37,99,235,.08); animation: riseIn .35s ease-out; }
+.topbar-label { font-size:.72rem; color:var(--text-soft); text-transform:uppercase; letter-spacing:.08em; font-weight:700; }
+.topbar-title { font-weight:700; letter-spacing:.01em; font-size:1.15rem; }
+.panel { background: var(--bg-panel); border:1px solid var(--line); border-radius:12px; box-shadow:var(--shadow); padding:1rem; transition:border-color .2s ease, box-shadow .2s ease, transform .2s ease; animation: riseIn .35s ease-out; }
+.panel:hover { transform:translateY(-2px); border-color:#c5d6e7; box-shadow:0 14px 26px rgba(37,99,235,.10); }
+.hero-grid .panel { background: var(--bg-tint); }
+.hero-grid { display:grid; grid-template-columns: 1fr; gap:1rem; }
+.metric-strip { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:.85rem; }
+.metric { border:1px solid var(--line); border-radius:10px; padding:.9rem; background:var(--bg-soft); transition:var(--tr); }
+.metric:hover { border-color:#bfd2ef; background:#f1f7ff; }
+.section-title { font-size:1.03rem; font-weight:700; margin-bottom:1rem; letter-spacing:.01em; }
+.small-muted { font-size:.88rem; color:var(--text-soft); line-height:1.55; }
+.input-group-text,.form-control,.form-select { background:#fff; border:1px solid #c8d4e3; color:var(--text-main); border-radius:8px; }
+.form-control::placeholder { color:var(--text-soft); }
+.form-control:focus,.form-select:focus { background:#fff; color:var(--text-main); border-color:#7fb1e3; box-shadow:0 0 0 .14rem rgba(10,110,209,.12); }
+.form-label { font-size:.84rem; font-weight:700; color:var(--text-soft); text-transform:uppercase; letter-spacing:.05em; margin-bottom:.45rem; }
+.btn.erp-primary { border:1px solid var(--accent-2); background:var(--accent); padding:.62rem .92rem; border-radius:8px; font-weight:700; }
+.btn.erp-primary:hover { transform:translateY(-1px); box-shadow:0 8px 16px rgba(37,99,235,.18); background:var(--accent-2); }
+.btn.glass-btn { border:1px solid #c8d4e3; background:#fff; color:var(--text-main); padding:.62rem .92rem; border-radius:8px; font-weight:600; }
+.btn-sm { border-radius:8px; }
+.table.erp { --bs-table-bg:transparent; --bs-table-color:var(--text-main); --bs-table-border-color:#dde6f0; }
+.table.erp thead th { font-size:.75rem; text-transform:uppercase; letter-spacing:.06em; color:var(--text-soft); border-bottom-width:1px; background:#f5f8fc; }
+.table.erp td { padding-top:.95rem; padding-bottom:.95rem; vertical-align:middle; }
+.table.erp tbody tr:hover { background:#f7fbff; }
+.badge-soft { border:1px solid transparent; font-weight:700; padding:.45rem .65rem; border-radius:999px; }
+.badge-ok { background:#e8f7ee; color:#1f7a3d; border-color:#bfe3cb; }
+.badge-pending { background:#fff4de; color:#9a6700; border-color:#f2d9a6; }
+.badge-bad { background:#fdecec; color:#b42318; border-color:#f2c4c1; }
+.workflow { display:flex; gap:.65rem; overflow-x:auto; padding-bottom:.2rem; }
+.workflow-step { text-decoration:none; white-space:nowrap; border-radius:999px; padding:.5rem .88rem; border:1px solid #d4dfea; color:#4f637a; background:#fff; font-size:.8rem; font-weight:700; transition:var(--tr); }
+.workflow-step.pending { opacity:.78; }
+.workflow-step.done { color:#1f7a3d; border-color:#bfe3cb; background:#e8f7ee; }
+.workflow-step.current { color:#0b3d6d; border-color:#9dc3e6; background:#e8f1fb; box-shadow:0 0 0 3px rgba(37,99,235,.08); animation: pulseSoft 2.2s infinite; }
+.flow-grid { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:.9rem; }
+.flow-node { border:1px solid var(--line); border-radius:12px; padding:1rem; background:linear-gradient(180deg, #ffffff 0%, #f8fbff 100%); min-height:136px; }
+.stat-image { border:1px solid var(--line); border-radius:12px; background:linear-gradient(180deg, #ffffff 0%, #f4f8ff 100%); padding:.8rem; }
+.stat-image svg { width:100%; height:auto; display:block; }
+.decision-card { border:1px solid #bcd1e6; border-radius:12px; padding:1rem; background:#f7fbff; }
+.page-kicker { font-size:.78rem; text-transform:uppercase; letter-spacing:.08em; color:var(--accent); font-weight:700; margin-bottom:.35rem; }
+.presenter-note { border-left:3px solid #a9c7e6; padding-left:.9rem; margin-top:.75rem; color:var(--text-soft); font-size:.86rem; }
+.progress-track { display:flex; gap:.55rem; flex-wrap:wrap; }
+.progress-pill { padding:.46rem .74rem; border-radius:999px; border:1px solid #d5dfeb; background:#fff; }
+.progress-pill.done { background:#e8f7ee; border-color:#bfe3cb; color:#1f7a3d; }
+.progress-pill.current { background:#e8f1fb; border-color:#b8d0e9; color:#0b3d6d; }
+.machine-dot { width:10px; height:10px; display:inline-block; border-radius:50%; margin-right:.35rem; }
+.machine-dot.run { background:var(--ok); animation:pulseDot 1.5s infinite; }
+.machine-dot.stop { background:#64748b; }
+.viz-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:.8rem; }
+@keyframes pulseDot { 0% { box-shadow:0 0 0 0 rgba(34,197,94,.65);} 70% { box-shadow:0 0 0 9px rgba(34,197,94,0);} 100% { box-shadow:0 0 0 0 rgba(34,197,94,0);} }
+@keyframes pageFade { from { opacity: .0; } to { opacity: 1; } }
+@keyframes riseIn { from { opacity: .0; transform: translateY(6px);} to { opacity: 1; transform: translateY(0);} }
+@keyframes pulseSoft { 0%,100% { box-shadow:0 0 0 0 rgba(37,99,235,.10);} 50% { box-shadow:0 0 0 4px rgba(37,99,235,.04);} }
+@media (max-width:1100px) { .sidebar { width:92px; } .brand-copy,.txt,.sidebar-footer { display:none; } .main { width:calc(100% - 92px); margin-left:92px; } .hero-grid,.flow-grid,.viz-grid { grid-template-columns:1fr; } }
+@media (max-width:768px) { .sidebar { width:100%; height:auto; inset:0 0 auto 0; border-right:0; border-bottom:1px solid var(--line); } .sidebar .nav { flex-direction:row !important; overflow-x:auto; white-space:nowrap; } .brand-copy,.sidebar-footer { display:none; } .main { width:100%; margin-left:0; padding-top:5.8rem; } .metric-strip { grid-template-columns:1fr; } }
+
+/* Design-system recreation from design_file.md */
+:root {
+  --bg-main: #f8fafc;
+  --bg-panel: #ffffff;
+  --bg-soft: #f8fafc;
+  --bg-tint: #ffffff;
+  --line: #e2e8f0;
+  --text-main: #0f172a;
+  --text-soft: #64748b;
+  --accent: #3b82f6;
+  --accent-2: #2563eb;
+  --ok: #22c55e;
+  --warn: #f59e0b;
+  --bad: #ef4444;
+  --shadow: 0 4px 16px rgba(15, 23, 42, 0.08);
+}
+body { background: var(--bg-main); font-size: 20px; font-weight: 400; line-height: 1.5; }
+.sidebar { background: #ffffff; border-right: 1px solid var(--line); }
+.topbar { background: #ffffff; border: 1px solid var(--line); box-shadow: var(--shadow); }
+.menu-group-label,.panel,.metric,.flow-node,.decision-card,.stat-image,.sidebar-footer { background: #ffffff; border-color: var(--line); box-shadow: none; }
+.nav-link.erp-link:hover { background: #eff6ff; color: var(--accent-2); transform: none; }
+.nav-link.erp-link.active { background: #dbeafe; border-color: #bfdbfe; box-shadow: none; }
+.workflow-step { background: #ffffff; border-color: var(--line); color: var(--text-soft); }
+.workflow-step.done { background: #ecfdf3; border-color: #bbf7d0; color: #15803d; }
+.workflow-step.current { background: #dbeafe; border-color: #93c5fd; color: #1d4ed8; box-shadow: none; animation: none; }
+.table.erp thead th { background: #f8fafc; color: var(--text-soft); }
+.table.erp tbody tr:hover { background: #f8fafc; }
+.badge-ok { background: #dcfce7; color: #166534; border-color: #86efac; }
+.badge-pending { background: #fef3c7; color: #92400e; border-color: #fcd34d; }
+.badge-bad { background: #fee2e2; color: #991b1b; border-color: #fca5a5; }
+.btn.erp-primary { background: var(--accent); border-color: var(--accent); }
+.btn.erp-primary:hover { background: var(--accent-2); border-color: var(--accent-2); box-shadow: none; transform: none; }
+.btn.glass-btn { background: #ffffff; border-color: var(--line); color: var(--text-main); }
+h1, .h1 { font-size: 32px; font-weight: 600; line-height: 1.25; }
+h2, .h2 { font-size: 28px; font-weight: 600; line-height: 1.3; }
+h3, .h3 { font-size: 24px; font-weight: 500; line-height: 1.35; }
+small, .small, .small-muted, .topbar-label, .page-kicker { font-size: 16px; font-weight: 400; }
+.form-label { font-size: 16px; font-weight: 500; color: var(--text-soft); }
+.section-title, .topbar-title { font-weight: 600; }
+
+/* Futuristic UI layer — glass, mesh gradient, teal/blue accents (design_file + reference) */
+html { scroll-behavior: smooth; }
+body {
+  background:
+    radial-gradient(ellipse 120% 85% at 100% -25%, rgba(14, 165, 233, 0.09), transparent 52%),
+    radial-gradient(ellipse 70% 55% at -15% 40%, rgba(99, 102, 241, 0.06), transparent 48%),
+    linear-gradient(180deg, #f0f9ff 0%, #f8fafc 42%, #f1f5f9 100%) !important;
+  font-family: "Inter", "Poppins", system-ui, sans-serif;
+}
+.brand-title,
+.topbar-title,
+.section-title,
+.display-6 {
+  font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+  letter-spacing: -0.025em;
+}
+.page-kicker {
+  font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+  letter-spacing: 0.05em;
+  color: #0284c7 !important;
+  -webkit-text-fill-color: #0284c7;
+}
+.sidebar {
+  background: rgba(255, 255, 255, 0.7) !important;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-right: 1px solid rgba(226, 232, 240, 0.95) !important;
+  box-shadow: 6px 0 40px rgba(15, 23, 42, 0.045);
+}
+.brand-mark {
+  background: linear-gradient(145deg, #0ea5e9 0%, #3b82f6 45%, #6366f1 100%) !important;
+  border: none !important;
+  box-shadow: 0 6px 24px rgba(59, 130, 246, 0.35), 0 0 0 1px rgba(255,255,255,0.25) inset;
+}
+.brand-mark i { color: #fff !important; }
+.nav-link.erp-link {
+  border-left: 3px solid transparent;
+  border-radius: 0 14px 14px 0;
+}
+.nav-link.erp-link.active {
+  border-left-color: #3b82f6 !important;
+  background: linear-gradient(90deg, rgba(59, 130, 246, 0.14), rgba(14, 165, 233, 0.06)) !important;
+  box-shadow: 0 0 28px rgba(59, 130, 246, 0.12);
+}
+.menu-group-label {
+  background: rgba(255, 255, 255, 0.75) !important;
+  backdrop-filter: blur(10px);
+  border-radius: 14px !important;
+  border-color: rgba(226, 232, 240, 0.95) !important;
+}
+.topbar {
+  background: rgba(255, 255, 255, 0.75) !important;
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border-radius: 16px !important;
+  border: 1px solid rgba(226, 232, 240, 0.9) !important;
+  box-shadow: 0 8px 32px rgba(15, 23, 42, 0.06), 0 0 0 1px rgba(255, 255, 255, 0.85) inset !important;
+}
+.main .input-group {
+  border-radius: 999px;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  box-shadow: 0 2px 16px rgba(15, 23, 42, 0.05);
+  background: rgba(255, 255, 255, 0.9);
+}
+.main .input-group .input-group-text,
+.main .input-group .form-control {
+  border: none !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+}
+.panel,
+.metric,
+.flow-node,
+.decision-card,
+.stat-image,
+.sidebar-footer {
+  background: rgba(255, 255, 255, 0.78) !important;
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border-radius: 16px !important;
+  border: 1px solid rgba(226, 232, 240, 0.92) !important;
+  box-shadow: 0 10px 36px rgba(15, 23, 42, 0.07), 0 0 0 1px rgba(255, 255, 255, 0.88) inset !important;
+}
+.hero-grid .panel {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.92) 0%, rgba(240, 249, 255, 0.65) 100%) !important;
+}
+.panel:hover {
+  border-color: rgba(14, 165, 233, 0.35) !important;
+  box-shadow: 0 14px 44px rgba(59, 130, 246, 0.12), 0 0 0 1px rgba(255, 255, 255, 0.92) inset !important;
+}
+.workflow-step {
+  border-radius: 999px !important;
+}
+.workflow-step.current {
+  box-shadow: 0 0 0 1px rgba(59, 130, 246, 0.45), 0 6px 22px rgba(14, 165, 233, 0.2) !important;
+}
+.btn.erp-primary {
+  border-radius: 999px !important;
+  box-shadow: 0 6px 22px rgba(59, 130, 246, 0.32);
+}
+.btn.erp-primary:hover {
+  box-shadow: 0 10px 32px rgba(59, 130, 246, 0.42) !important;
+}
+.btn.glass-btn {
+  border-radius: 999px !important;
+  background: rgba(255, 255, 255, 0.82) !important;
+  backdrop-filter: blur(8px);
+  border-color: rgba(226, 232, 240, 0.95) !important;
+}
+.table.erp tbody tr:hover {
+  background: rgba(240, 249, 255, 0.55) !important;
+}
+
+
+/* Phone & tablet — touch targets, stacking, readable scale */
+@media (max-width: 991.98px) {
+  body { font-size: 17px !important; }
+  h1, .h1 { font-size: 26px !important; }
+  h2, .h2 { font-size: 22px !important; }
+  h3, .h3 { font-size: 19px !important; }
+  .main { padding: 0.75rem 1rem 1.5rem !important; }
+  .topbar {
+    flex-wrap: wrap !important;
+    gap: 0.75rem !important;
+    top: 6px !important;
+  }
+  .topbar .d-flex.align-items-center.gap-2:last-child {
+    flex: 1 1 100%;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+  }
+  .topbar .input-group {
+    max-width: 100% !important;
+    flex: 1 1 220px;
+  }
+  .sidebar {
+    max-height: 48vh;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    z-index: 1040;
+  }
+  .workflow {
+    padding: 0.35rem 0;
+    gap: 0.5rem !important;
+    scroll-snap-type: x proximity;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+  }
+  .workflow-step {
+    scroll-snap-align: start;
+    flex-shrink: 0;
+  }
+  .table-responsive {
+    -webkit-overflow-scrolling: touch;
+    border-radius: 12px;
+  }
+  .panel .d-flex.justify-content-between.align-items-center {
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+}
+@media (max-width: 575.98px) {
+  body { font-size: 16px !important; }
+  h1, .h1 { font-size: 22px !important; }
+  h2, .h2 { font-size: 19px !important; }
+  .main { padding-left: 0.65rem !important; padding-right: 0.65rem !important; }
+  .display-6 { font-size: 1.5rem !important; }
+  .erp-info-btn {
+    min-width: 44px;
+    min-height: 44px;
+    padding: 0 !important;
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+  }
+  .btn.glass-btn:not(.erp-info-btn),
+  .btn.erp-primary {
+    min-height: 44px;
+  }
+  .menu-group-label {
+    min-height: 44px;
+  }
+  .nav-link.erp-link {
+    min-height: 44px;
+    align-items: center;
+  }
+}
+
+
+
+/* ERP palette — #EDEEF7 · #91C8E4 · #749BC2 · #4682A9 */
+:root {
+  --erp-cream: #EDEEF7;
+  --erp-sky: #91C8E4;
+  --erp-blue: #749BC2;
+  --erp-steel: #4682A9;
+  --text-soft: #3d4f5c;
+  --line: #aac4d4;
+}
+body {
+  background: #EDEEF7 !important;
+  color: #1a2e3a !important;
+  line-height: 1.55 !important;
+  font-size: 18px !important;
+  animation: none !important;
+}
+.brand-title,
+.topbar-title,
+.section-title,
+.display-6,
+.page-kicker {
+  font-family: "Inter", "Poppins", system-ui, sans-serif !important;
+  letter-spacing: 0 !important;
+}
+.page-kicker {
+  color: #4682A9 !important;
+  -webkit-text-fill-color: #4682A9 !important;
+  font-weight: 600 !important;
+  font-size: 14px !important;
+  letter-spacing: 0.05em !important;
+}
+.sidebar {
+  background: #ffffff !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  border-right: 2px solid #749BC2 !important;
+  box-shadow: none !important;
+}
+.brand-mark {
+  background: #4682A9 !important;
+  box-shadow: none !important;
+  border: 1px solid #3a6d8a !important;
+}
+.nav-link.erp-link.active {
+  background: rgba(145, 200, 228, 0.38) !important;
+  box-shadow: none !important;
+  border-left-color: #4682A9 !important;
+}
+.menu-group-label {
+  background: #ffffff !important;
+  backdrop-filter: none !important;
+  border-color: #749BC2 !important;
+}
+.topbar {
+  background: #ffffff !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  border: 1px solid #749BC2 !important;
+  border-radius: 12px !important;
+  box-shadow: 0 1px 3px rgba(70, 130, 169, 0.12) !important;
+}
+.panel,
+.flow-node,
+.decision-card,
+.stat-image,
+.sidebar-footer {
+  background: #ffffff !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  border: 1px solid #aac4d4 !important;
+  border-radius: 12px !important;
+  box-shadow: 0 1px 2px rgba(70, 130, 169, 0.08) !important;
+}
+.metric {
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  border-radius: 12px !important;
+  box-shadow: 0 1px 2px rgba(70, 130, 169, 0.08) !important;
+  border: 1px solid rgba(116, 155, 194, 0.5) !important;
+  background: linear-gradient(155deg, rgba(145, 200, 228, 0.32) 0%, #ffffff 70%) !important;
+}
+.metric:nth-child(4n + 2) {
+  border-color: rgba(70, 130, 169, 0.4) !important;
+  background: linear-gradient(155deg, rgba(116, 155, 194, 0.28) 0%, #ffffff 68%) !important;
+}
+.metric:nth-child(4n + 3) {
+  border-color: rgba(145, 200, 228, 0.65) !important;
+  background: linear-gradient(155deg, rgba(70, 130, 169, 0.14) 0%, rgba(237, 238, 247, 0.5) 42%, #ffffff 88%) !important;
+}
+.metric:nth-child(4n + 4) {
+  border-color: rgba(116, 155, 194, 0.55) !important;
+  background: linear-gradient(155deg, rgba(174, 198, 228, 0.35) 0%, #ffffff 72%) !important;
+}
+.panel.h-100:has(.fs-3.fw-bold) {
+  border-color: rgba(116, 155, 194, 0.5) !important;
+  background: linear-gradient(155deg, rgba(145, 200, 228, 0.3) 0%, #ffffff 72%) !important;
+  box-shadow: 0 1px 2px rgba(70, 130, 169, 0.08) !important;
+}
+.row.g-3 > div:nth-child(4n + 2) .panel.h-100:has(.fs-3.fw-bold) {
+  border-color: rgba(70, 130, 169, 0.38) !important;
+  background: linear-gradient(155deg, rgba(116, 155, 194, 0.26) 0%, #ffffff 70%) !important;
+}
+.row.g-3 > div:nth-child(4n + 3) .panel.h-100:has(.fs-3.fw-bold) {
+  border-color: rgba(145, 200, 228, 0.65) !important;
+  background: linear-gradient(155deg, rgba(70, 130, 169, 0.12) 0%, rgba(237, 238, 247, 0.52) 45%, #ffffff 88%) !important;
+}
+.row.g-3 > div:nth-child(4n + 4) .panel.h-100:has(.fs-3.fw-bold) {
+  border-color: rgba(116, 155, 194, 0.55) !important;
+  background: linear-gradient(155deg, rgba(174, 198, 228, 0.32) 0%, #ffffff 72%) !important;
+}
+.hero-grid .panel {
+  background: #ffffff !important;
+}
+.panel:hover {
+  transform: none !important;
+  border-color: #749BC2 !important;
+  box-shadow: 0 1px 3px rgba(70, 130, 169, 0.12) !important;
+}
+.main .input-group {
+  box-shadow: none !important;
+  background: #ffffff !important;
+  border: 1px solid #749BC2 !important;
+}
+.workflow-step {
+  border: 1px solid #aac4d4 !important;
+  background: #ffffff !important;
+}
+.workflow-step.done {
+  background: #e8f5ec !important;
+  border-color: #5a9e6f !important;
+  color: #14532d !important;
+}
+.workflow-step.current {
+  box-shadow: none !important;
+  border: 2px solid #4682A9 !important;
+  background: rgba(145, 200, 228, 0.35) !important;
+  color: #2c5270 !important;
+  font-weight: 600 !important;
+}
+.btn.erp-primary {
+  box-shadow: none !important;
+  background: #4682A9 !important;
+  border-color: #3a6d8a !important;
+}
+.btn.erp-primary:hover {
+  box-shadow: none !important;
+  background: #3a6d8a !important;
+  border-color: #2f5a78 !important;
+}
+.btn.glass-btn {
+  backdrop-filter: none !important;
+  background: #ffffff !important;
+  border: 1px solid #749BC2 !important;
+}
+.table.erp thead th {
+  background: rgba(145, 200, 228, 0.45) !important;
+  color: #2c5270 !important;
+}
+.table.erp tbody tr:hover {
+  background: rgba(145, 200, 228, 0.18) !important;
+}
+.small-muted,
+.topbar-label {
+  color: #3d4f5c !important;
+}
+.form-label {
+  color: #3d4f5c !important;
+}
+.badge-soft {
+  font-weight: 600 !important;
+}
+.modal-content {
+  border: 1px solid #749BC2 !important;
+  box-shadow: 0 4px 20px rgba(70, 130, 169, 0.18) !important;
+}
+.sidebar-footer {
+  padding: 0.6rem 0.75rem !important;
+  font-size: 13px !important;
+}
+.erp-info-btn {
+  border-width: 2px !important;
+  color: #4682A9 !important;
+  border-color: #4682A9 !important;
+}
+</style>
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar">
+      <div class="brand"><div class="brand-left"><span class="brand-mark"><i class="bi bi-building-gear"></i></span><div class="brand-copy"><div class="brand-title">SteelFlow ERP</div><div class="brand-sub">Process-driven steel workflow</div></div></div></div>
+      <ul class="nav flex-column"><div class="menu-group" data-menu-group="0"><button class="menu-group-label" type="button" data-menu-toggle="0"><span class="menu-group-title"><i class="bi bi-grid-1x2-fill"></i><span class="txt">Overview</span></span><i class="bi bi-chevron-right menu-chevron"></i></button><ul class="nav flex-column menu-group-links"><li class="nav-item"><a class="nav-link erp-link submenu-link" href="dashboard.html"><i class="bi bi-grid-1x2-fill"></i><span class="txt">Dashboard</span></a></li><li class="nav-item"><a class="nav-link erp-link submenu-link" href="reports.html"><i class="bi bi-bar-chart-line"></i><span class="txt">Reports</span></a></li></ul></div><div class="menu-group" data-menu-group="1"><button class="menu-group-label" type="button" data-menu-toggle="1"><span class="menu-group-title"><i class="bi bi-cart-check"></i><span class="txt">Procurement</span></span><i class="bi bi-chevron-right menu-chevron"></i></button><ul class="nav flex-column menu-group-links"><li class="nav-item"><a class="nav-link erp-link submenu-link" href="procurement-need.html"><i class="bi bi-exclamation-diamond"></i><span class="txt">Procurement Need</span></a></li><li class="nav-item"><a class="nav-link erp-link submenu-link" href="vendor.html"><i class="bi bi-building-add"></i><span class="txt">Vendor</span></a></li><li class="nav-item"><a class="nav-link erp-link submenu-link" href="po.html"><i class="bi bi-cart-check"></i><span class="txt">Procurement (PO)</span></a></li><li class="nav-item"><a class="nav-link erp-link submenu-link active" href="grn.html"><i class="bi bi-box-arrow-in-down"></i><span class="txt">GRN</span></a></li><li class="nav-item"><a class="nav-link erp-link submenu-link" href="qc-rm.html"><i class="bi bi-clipboard2-check"></i><span class="txt">QC (RM)</span></a></li><li class="nav-item"><a class="nav-link erp-link submenu-link" href="inventory-rm.html"><i class="bi bi-box-seam"></i><span class="txt">RM Inventory</span></a></li></ul></div><div class="menu-group" data-menu-group="2"><button class="menu-group-label" type="button" data-menu-toggle="2"><span class="menu-group-title"><i class="bi bi-receipt-cutoff"></i><span class="txt">Sales</span></span><i class="bi bi-chevron-right menu-chevron"></i></button><ul class="nav flex-column menu-group-links"><li class="nav-item"><a class="nav-link erp-link submenu-link" href="product-master.html"><i class="bi bi-sliders"></i><span class="txt">Product Master</span></a></li><li class="nav-item"><a class="nav-link erp-link submenu-link" href="inquiry.html"><i class="bi bi-chat-left-dots"></i><span class="txt">Sales Inquiry</span></a></li><li class="nav-item"><a class="nav-link erp-link submenu-link" href="quotation.html"><i class="bi bi-file-earmark-richtext"></i><span class="txt">Quotation</span></a></li><li class="nav-item"><a class="nav-link erp-link submenu-link" href="sales-order.html"><i class="bi bi-receipt-cutoff"></i><span class="txt">Sales Order</span></a></li><li class="nav-item"><a class="nav-link erp-link submenu-link" href="allocation.html"><i class="bi bi-diagram-3"></i><span class="txt">SO Allocation</span></a></li></ul></div><div class="menu-group" data-menu-group="3"><button class="menu-group-label" type="button" data-menu-toggle="3"><span class="menu-group-title"><i class="bi bi-gear-wide-connected"></i><span class="txt">Planning & Production</span></span><i class="bi bi-chevron-right menu-chevron"></i></button><ul class="nav flex-column menu-group-links"><li class="nav-item"><a class="nav-link erp-link submenu-link" href="mrp.html"><i class="bi bi-diagram-2"></i><span class="txt">MRP</span></a></li><li class="nav-item"><a class="nav-link erp-link submenu-link" href="production.html"><i class="bi bi-gear-wide-connected"></i><span class="txt">Production</span></a></li><li class="nav-item"><a class="nav-link erp-link submenu-link" href="qc-fg.html"><i class="bi bi-patch-check"></i><span class="txt">FG QC</span></a></li><li class="nav-item"><a class="nav-link erp-link submenu-link" href="inventory-fg.html"><i class="bi bi-archive"></i><span class="txt">FG Inventory</span></a></li></ul></div><div class="menu-group" data-menu-group="4"><button class="menu-group-label" type="button" data-menu-toggle="4"><span class="menu-group-title"><i class="bi bi-truck"></i><span class="txt">Dispatch & Finance</span></span><i class="bi bi-chevron-right menu-chevron"></i></button><ul class="nav flex-column menu-group-links"><li class="nav-item"><a class="nav-link erp-link submenu-link" href="dispatch.html"><i class="bi bi-truck"></i><span class="txt">Dispatch</span></a></li><li class="nav-item"><a class="nav-link erp-link submenu-link" href="billing.html"><i class="bi bi-cash-coin"></i><span class="txt">Billing</span></a></li><li class="nav-item"><a class="nav-link erp-link submenu-link" href="delivery.html"><i class="bi bi-sign-turn-right"></i><span class="txt">Delivery</span></a></li></ul></div></ul>
+      <div class="sidebar-footer"><div class="small-muted text-uppercase">Operations Standard</div><div class="mt-2 fw-semibold">Source -> Plan -> Make -> Allocate -> Dispatch</div></div>
+    </aside>
+    <main class="main">
+      <div class="topbar d-flex justify-content-between align-items-center gap-3">
+        <div class="d-flex align-items-center gap-2"><button id="sidebarToggle" class="btn glass-btn" type="button" title="Hide or view sidebar"><i class="bi bi-layout-sidebar-inset"></i></button><div><div class="topbar-label">SteelFlow ERP</div><div class="topbar-title">GRN Receipt</div></div></div>
+        <div class="d-flex align-items-center gap-2">
+          <div class="input-group" style="max-width:340px;"><span class="input-group-text border-secondary"><i class="bi bi-search"></i></span><input class="form-control" placeholder="Search PO, SO, heat no, truck..." /></div>
+          <button class="btn glass-btn" type="button"><i class="bi bi-bell"></i></button>
+        </div>
+      </div>
+      <section class="panel mb-3">
+        <div class="d-flex justify-content-between align-items-center mb-2"><div class="section-title mb-0">Workflow Stepper</div><span class="badge badge-soft badge-pending">Decision connected</span></div>
+        <div class="workflow"><a class="workflow-step done" href="procurement-need.html">Need</a><a class="workflow-step done" href="vendor.html">Vendor</a><a class="workflow-step done" href="po.html">PO</a><a class="workflow-step current" href="grn.html">GRN</a><a class="workflow-step pending" href="qc-rm.html">QC</a><a class="workflow-step pending" href="inventory-rm.html">RM</a><a class="workflow-step pending" href="product-master.html">Product</a><a class="workflow-step pending" href="inquiry.html">Inquiry</a><a class="workflow-step pending" href="sales-order.html">SO</a><a class="workflow-step pending" href="mrp.html">MRP</a><a class="workflow-step pending" href="production.html">Production</a><a class="workflow-step pending" href="inventory-fg.html">FG</a><a class="workflow-step pending" href="allocation.html">Allocation</a><a class="workflow-step pending" href="dispatch.html">Dispatch</a><a class="workflow-step pending" href="billing.html">Billing</a><a class="workflow-step pending" href="delivery.html">Delivery</a></div>
+      </section>
+      
+<section class="hero-grid mb-3">
+  <div class="panel">
+    <div class="page-kicker">GRN Stage</div>
+    <div class="d-flex justify-content-between align-items-start gap-3 flex-wrap">
+      <div class="flex-grow-1 min-w-0">
+        <div class="d-flex align-items-start gap-2 flex-wrap">
+          <h2 class="mt-1 mb-0 flex-grow-1" style="font-size:1.75rem; font-weight:700; line-height:1.18;">Incoming Receipt Validation</h2>
+          <button type="button" class="btn btn-outline-primary erp-info-btn rounded-circle flex-shrink-0"
+            data-bs-toggle="modal" data-bs-target="#pageContextModal"
+            title="About this screen" aria-label="About this screen"><i class="bi bi-info-lg"></i></button>
+        </div>
+      </div>
+      <span class="badge badge-soft badge-ok align-self-start">Enterprise View</span>
+    </div>
+    <div id="pageHelpContent" class="visually-hidden" aria-hidden="true">
+      <p class="mb-3">Record actual receipt against purchase order before quality clearance.</p>
+      <p class="presenter-note mb-0">Standardized page summary with key operating indicators for review and decision-making.</p>
+    </div>
+    <div class="metric-strip mt-3"><div class="metric"><div class="small-muted">Receipt</div><div class="fw-semibold mt-1">32.2 t</div></div><div class="metric"><div class="small-muted">Truck</div><div class="fw-semibold mt-1">MH40AZ7812</div></div><div class="metric"><div class="small-muted">Next</div><div class="fw-semibold mt-1">QC RM</div></div></div>
+  </div>
+</section>
+
+      
+<section class="panel"><div class="section-title">GRN + Weighbridge</div><form class="row g-3">
+  <div class="col-md-4"><label class="form-label">PO Selection</label><select class="form-select"><option>PO-2026-0416-14</option></select></div>
+  <div class="col-md-4"><label class="form-label">Truck No</label><input class="form-control" value="MH40AZ7812" /></div>
+  <div class="col-md-4"><label class="form-label">Driver</label><input class="form-control" value="Mukesh Yadav" /></div>
+  <div class="col-md-4"><label class="form-label">Gross Weight</label><input class="form-control" value="41.8 t" /></div>
+  <div class="col-md-4"><label class="form-label">Tare Weight</label><input class="form-control" value="9.6 t" /></div>
+  <div class="col-md-4"><label class="form-label">Net Weight</label><input class="form-control" value="32.2 t" /></div>
+  <div class="col-12"><a href="qc-rm.html" class="btn erp-primary btn-primary">GRN -> QC RM</a></div>
+</form></section>
+
+      <div class="modal fade" id="pageContextModal" tabindex="-1" aria-labelledby="pageContextModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+          <div class="modal-content border-0 shadow-lg" style="border-radius: 16px;">
+            <div class="modal-header border-0 pb-0">
+              <h5 class="modal-title" id="pageContextModalLabel">About this screen</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body pt-2 text-body-secondary" id="pageContextModalBody"></div>
+          </div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  
+  
+<script>
+(function () {
+  document.addEventListener("DOMContentLoaded", function () {
+    const app = document.querySelector(".app");
+    const sidebarToggle = document.getElementById("sidebarToggle");
+    const groups = document.querySelectorAll(".menu-group");
+    const toggles = document.querySelectorAll("[data-menu-toggle]");
+
+    if (sidebarToggle && app) {
+      sidebarToggle.addEventListener("click", function () {
+        app.classList.toggle("sidebar-collapsed");
+        const collapsed = app.classList.contains("sidebar-collapsed");
+        this.innerHTML = collapsed
+          ? '<i class="bi bi-layout-sidebar"></i>'
+          : '<i class="bi bi-layout-sidebar-inset"></i>';
+      });
+    }
+
+    toggles.forEach(function (toggle) {
+      toggle.addEventListener("click", function () {
+        const target = this.getAttribute("data-menu-toggle");
+        const group = document.querySelector('.menu-group[data-menu-group="' + target + '"]');
+        const willOpen = group && !group.classList.contains("open");
+        groups.forEach(function (g) { g.classList.remove("open"); });
+        if (willOpen && group) {
+          group.classList.add("open");
+        }
+      });
+    });
+  });
+})();
+</script>
+
+
+<script>
+(function () {
+  document.addEventListener("DOMContentLoaded", function () {
+    var modalEl = document.getElementById("pageContextModal");
+    var src = document.getElementById("pageHelpContent");
+    var bodyEl = document.getElementById("pageContextModalBody");
+    if (modalEl && src && bodyEl) {
+      modalEl.addEventListener("show.bs.modal", function () {
+        bodyEl.innerHTML = src.innerHTML;
+      });
+    }
+  });
+})();
+</script>
+
+</body>
+</html>

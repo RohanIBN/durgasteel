@@ -1,0 +1,1785 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SteelFlow ERP - Dashboard</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Poppins:wght@400;500;600&display=swap"
+    rel="stylesheet"
+  />
+  <link
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+    rel="stylesheet"
+  />
+  <link
+    href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css"
+    rel="stylesheet"
+  />
+
+  <style>
+    :root {
+      --bg-main: #0b1220;
+      --bg-panel: #0f172a;
+      --bg-card: #111c31;
+      --bg-soft: #1a2742;
+      --text-main: #e2e8f0;
+      --text-muted: #94a3b8;
+      --accent: #38bdf8;
+      --accent-2: #3b82f6;
+      --success: #22c55e;
+      --warning: #f59e0b;
+      --danger: #ef4444;
+      --steel: #64748b;
+      --radius: 14px;
+      --shadow-soft: 0 8px 24px rgba(0, 0, 0, 0.35);
+      --transition: all 0.28s ease;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html, body {
+      height: 100%;
+      background: radial-gradient(circle at 20% 0%, #16233d 0%, var(--bg-main) 45%, #070b14 100%);
+      color: var(--text-main);
+      font-family: "Inter", sans-serif;
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      overflow-x: hidden;
+    }
+
+    .app-wrapper {
+      display: flex;
+      min-height: 100vh;
+      animation: fadeInUp 0.6s ease;
+    }
+
+    .sidebar {
+      width: 260px;
+      background: linear-gradient(185deg, #0f172a 0%, #0b1220 100%);
+      border-right: 1px solid rgba(148, 163, 184, 0.18);
+      position: fixed;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      z-index: 1030;
+      padding: 1.25rem 1rem;
+      backdrop-filter: blur(8px);
+    }
+
+    .sidebar-brand {
+      font-size: 1.2rem;
+      font-weight: 700;
+      letter-spacing: 0.4px;
+      color: #f1f5f9;
+      margin-bottom: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+
+    .sidebar-brand i {
+      color: var(--accent);
+      text-shadow: 0 0 10px rgba(56, 189, 248, 0.5);
+    }
+
+    .nav-link.steel-nav {
+      color: #cbd5e1;
+      border-radius: 10px;
+      padding: 0.72rem 0.8rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-bottom: 0.35rem;
+      transition: var(--transition);
+    }
+
+    .steel-nav i {
+      font-size: 1.06rem;
+      transition: var(--transition);
+    }
+
+    .steel-nav:hover {
+      background: rgba(56, 189, 248, 0.1);
+      color: #e2e8f0;
+      transform: translateX(4px);
+    }
+
+    .steel-nav:hover i {
+      color: var(--accent);
+      text-shadow: 0 0 12px rgba(56, 189, 248, 0.7);
+    }
+
+    .steel-nav.active {
+      background: linear-gradient(90deg, rgba(59, 130, 246, 0.2), rgba(56, 189, 248, 0.13));
+      border: 1px solid rgba(56, 189, 248, 0.45);
+      color: #e2e8f0;
+      box-shadow: 0 0 14px rgba(56, 189, 248, 0.25);
+    }
+
+    .main-content {
+      margin-left: 260px;
+      width: calc(100% - 260px);
+      padding: 1.2rem 1.4rem 2rem;
+    }
+
+    .topbar {
+      background: rgba(15, 23, 42, 0.85);
+      border: 1px solid rgba(148, 163, 184, 0.2);
+      border-radius: var(--radius);
+      backdrop-filter: blur(8px);
+      box-shadow: var(--shadow-soft);
+      padding: 0.75rem 1rem;
+      margin-bottom: 1rem;
+      position: sticky;
+      top: 12px;
+      z-index: 1020;
+    }
+
+    .search-wrap {
+      background: rgba(30, 41, 59, 0.8);
+      border: 1px solid rgba(148, 163, 184, 0.25);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    .search-wrap .form-control,
+    .search-wrap .input-group-text {
+      background: transparent;
+      border: 0;
+      color: var(--text-main);
+    }
+
+    .search-wrap .form-control::placeholder {
+      color: var(--text-muted);
+    }
+
+    .search-wrap .form-control:focus {
+      box-shadow: none;
+    }
+
+    .icon-btn {
+      width: 40px;
+      height: 40px;
+      border-radius: 12px;
+      border: 1px solid rgba(148, 163, 184, 0.3);
+      background: rgba(30, 41, 59, 0.7);
+      color: #cbd5e1;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: var(--transition);
+    }
+
+    .icon-btn:hover {
+      transform: translateY(-2px);
+      color: #fff;
+      border-color: rgba(56, 189, 248, 0.6);
+      box-shadow: 0 0 14px rgba(56, 189, 248, 0.35);
+    }
+
+    .steel-card {
+      background: linear-gradient(160deg, rgba(17, 28, 49, 0.9), rgba(15, 23, 42, 0.9));
+      border: 1px solid rgba(100, 116, 139, 0.35);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-soft);
+      transition: var(--transition);
+      overflow: hidden;
+    }
+
+    .steel-card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(56, 189, 248, 0.5);
+    }
+
+    .kpi-card {
+      position: relative;
+      isolation: isolate;
+    }
+
+    .kpi-card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      padding: 1px;
+      border-radius: var(--radius);
+      background: linear-gradient(120deg, rgba(56, 189, 248, 0.55), rgba(148, 163, 184, 0.3), rgba(59, 130, 246, 0.6));
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+      z-index: -1;
+    }
+
+    .kpi-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      background: linear-gradient(140deg, rgba(56, 189, 248, 0.22), rgba(59, 130, 246, 0.2));
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      color: #7dd3fc;
+    }
+
+    .section-title {
+      font-weight: 600;
+      font-size: 1rem;
+      color: #e2e8f0;
+      margin-bottom: 0.9rem;
+    }
+
+    .section-subtitle {
+      font-size: 0.84rem;
+      color: var(--text-muted);
+    }
+
+    .process-track {
+      display: flex;
+      gap: 0.9rem;
+      overflow-x: auto;
+      padding-bottom: 0.35rem;
+    }
+
+    .process-track::-webkit-scrollbar {
+      height: 6px;
+    }
+
+    .process-track::-webkit-scrollbar-thumb {
+      background: rgba(56, 189, 248, 0.45);
+      border-radius: 999px;
+    }
+
+    .flow-step {
+      min-width: 150px;
+      padding: 0.8rem 0.75rem;
+      border-radius: 12px;
+      background: rgba(30, 41, 59, 0.7);
+      border: 1px solid rgba(100, 116, 139, 0.35);
+      text-align: center;
+      position: relative;
+      transition: var(--transition);
+    }
+
+    .flow-step:hover {
+      border-color: rgba(56, 189, 248, 0.6);
+      transform: translateY(-2px);
+    }
+
+    .flow-step.active {
+      border-color: rgba(56, 189, 248, 0.85);
+      box-shadow: 0 0 14px rgba(56, 189, 248, 0.35);
+      background: linear-gradient(145deg, rgba(56, 189, 248, 0.18), rgba(30, 41, 59, 0.7));
+    }
+
+    .flow-step:not(:last-child)::after {
+      content: "";
+      position: absolute;
+      right: -15px;
+      top: 50%;
+      width: 18px;
+      height: 2px;
+      background: linear-gradient(90deg, rgba(56, 189, 248, 0.8), rgba(148, 163, 184, 0.3));
+      transform: translateY(-50%);
+      animation: pulseLine 2.2s infinite ease-in-out;
+    }
+
+    .table-steel {
+      --bs-table-bg: transparent;
+      --bs-table-color: var(--text-main);
+      --bs-table-border-color: rgba(148, 163, 184, 0.18);
+      margin-bottom: 0;
+    }
+
+    .table-steel tbody tr {
+      transition: var(--transition);
+    }
+
+    .table-steel tbody tr:hover {
+      background: rgba(56, 189, 248, 0.08);
+      transform: translateX(2px);
+    }
+
+    .badge-soft {
+      border: 1px solid transparent;
+      font-weight: 500;
+      padding: 0.35rem 0.55rem;
+    }
+
+    .badge-ok {
+      background: rgba(34, 197, 94, 0.18);
+      color: #86efac;
+      border-color: rgba(34, 197, 94, 0.35);
+    }
+
+    .badge-pending {
+      background: rgba(245, 158, 11, 0.2);
+      color: #fde68a;
+      border-color: rgba(245, 158, 11, 0.36);
+    }
+
+    .badge-issue {
+      background: rgba(239, 68, 68, 0.18);
+      color: #fca5a5;
+      border-color: rgba(239, 68, 68, 0.32);
+    }
+
+    .progress {
+      height: 8px;
+      background-color: rgba(148, 163, 184, 0.18);
+      border-radius: 999px;
+      overflow: hidden;
+    }
+
+    .progress-bar {
+      transition: width 1.1s ease-in-out;
+    }
+
+    .machine-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 999px;
+      display: inline-block;
+      margin-right: 0.4rem;
+    }
+
+    .machine-dot.running {
+      background: var(--success);
+      box-shadow: 0 0 0 rgba(34, 197, 94, 0.7);
+      animation: pulseDot 1.6s infinite;
+    }
+
+    .machine-dot.idle {
+      background: var(--steel);
+    }
+
+    .low-stock {
+      border: 1px solid rgba(239, 68, 68, 0.55) !important;
+      box-shadow: 0 0 14px rgba(239, 68, 68, 0.28);
+    }
+
+    .tracker {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.6rem;
+    }
+
+    .tracker-step {
+      padding: 0.45rem 0.75rem;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.3);
+      color: var(--text-muted);
+      background: rgba(30, 41, 59, 0.65);
+      font-size: 0.82rem;
+      transition: var(--transition);
+    }
+
+    .tracker-step.done {
+      color: #bbf7d0;
+      border-color: rgba(34, 197, 94, 0.45);
+      background: rgba(34, 197, 94, 0.16);
+    }
+
+    .tracker-step.current {
+      color: #bfdbfe;
+      border-color: rgba(59, 130, 246, 0.52);
+      background: rgba(59, 130, 246, 0.2);
+      box-shadow: 0 0 10px rgba(59, 130, 246, 0.28);
+    }
+
+    .form-control,
+    .form-select {
+      background: rgba(15, 23, 42, 0.78);
+      border: 1px solid rgba(148, 163, 184, 0.3);
+      color: var(--text-main);
+    }
+
+    .form-control::placeholder {
+      color: var(--text-muted);
+    }
+
+    .form-control:focus,
+    .form-select:focus {
+      border-color: rgba(56, 189, 248, 0.6);
+      box-shadow: 0 0 0 0.2rem rgba(56, 189, 248, 0.15);
+      background: rgba(15, 23, 42, 0.92);
+      color: var(--text-main);
+    }
+
+    .btn-steel {
+      background: linear-gradient(120deg, var(--accent-2), var(--accent));
+      border: none;
+      color: #f8fafc;
+      border-radius: 10px;
+      transition: var(--transition);
+      padding-inline: 1rem;
+    }
+
+    .btn-steel:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 18px rgba(56, 189, 248, 0.35);
+      color: #fff;
+    }
+
+    .small-muted {
+      color: var(--text-muted);
+      font-size: 0.82rem;
+    }
+
+    @keyframes pulseDot {
+      0% {
+        box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.65);
+      }
+      70% {
+        box-shadow: 0 0 0 10px rgba(34, 197, 94, 0);
+      }
+      100% {
+        box-shadow: 0 0 0 0 rgba(34, 197, 94, 0);
+      }
+    }
+
+    @keyframes pulseLine {
+      0%, 100% {
+        opacity: 0.45;
+      }
+      50% {
+        opacity: 1;
+      }
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(14px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @media (max-width: 1199px) {
+      .sidebar {
+        width: 86px;
+        padding-inline: 0.6rem;
+      }
+
+      .sidebar .label {
+        display: none;
+      }
+
+      .sidebar-brand span {
+        display: none;
+      }
+
+      .main-content {
+        margin-left: 86px;
+        width: calc(100% - 86px);
+      }
+
+      .steel-nav {
+        justify-content: center;
+      }
+    }
+
+    @media (max-width: 767px) {
+      .sidebar {
+        position: fixed;
+        bottom: auto;
+        width: 100%;
+        height: auto;
+        border-right: 0;
+        border-bottom: 1px solid rgba(148, 163, 184, 0.2);
+      }
+
+      .sidebar .nav {
+        flex-direction: row;
+        overflow-x: auto;
+        white-space: nowrap;
+        gap: 0.35rem;
+        padding-bottom: 0.2rem;
+      }
+
+      .sidebar .nav-link {
+        margin-bottom: 0;
+      }
+
+      .main-content {
+        margin-left: 0;
+        width: 100%;
+        margin-top: 96px;
+        padding: 1rem 0.8rem 1.8rem;
+      }
+
+      .topbar .app-label {
+        display: none;
+      }
+    }
+  
+/* Design-system recreation from design_file.md */
+:root {
+  --bg-main: #f8fafc;
+  --bg-panel: #ffffff;
+  --bg-soft: #f8fafc;
+  --bg-tint: #ffffff;
+  --line: #e2e8f0;
+  --text-main: #0f172a;
+  --text-soft: #64748b;
+  --accent: #4682A9;
+  --accent-2: #3a6d8a;
+  --ok: #22c55e;
+  --warn: #f59e0b;
+  --bad: #ef4444;
+  --shadow: 0 4px 16px rgba(15, 23, 42, 0.08);
+}
+body { background: var(--bg-main); font-size: 20px; font-weight: 400; line-height: 1.5; }
+.sidebar { background: #ffffff; border-right: 1px solid var(--line); }
+.topbar { background: #ffffff; border: 1px solid var(--line); box-shadow: var(--shadow); }
+.menu-group-label,.panel,.metric,.flow-node,.decision-card,.stat-image,.sidebar-footer { background: #ffffff; border-color: var(--line); box-shadow: none; }
+.nav-link.erp-link:hover { background: #eff6ff; color: var(--accent-2); transform: none; }
+.nav-link.erp-link.active { background: #dbeafe; border-color: #bfdbfe; box-shadow: none; }
+.workflow-step { background: #ffffff; border-color: var(--line); color: var(--text-soft); }
+.workflow-step.done { background: #ecfdf3; border-color: #bbf7d0; color: #15803d; }
+.workflow-step.current { background: #dbeafe; border-color: #93c5fd; color: #1d4ed8; box-shadow: none; animation: none; }
+.table.erp thead th { background: #f8fafc; color: var(--text-soft); }
+.table.erp tbody tr:hover { background: #f8fafc; }
+.badge-ok { background: #dcfce7; color: #166534; border-color: #86efac; }
+.badge-pending { background: #fef3c7; color: #92400e; border-color: #fcd34d; }
+.badge-bad { background: #fee2e2; color: #991b1b; border-color: #fca5a5; }
+.btn.erp-primary { background: var(--accent); border-color: var(--accent); }
+.btn.erp-primary:hover { background: var(--accent-2); border-color: var(--accent-2); box-shadow: none; transform: none; }
+.btn.glass-btn { background: #ffffff; border-color: var(--line); color: var(--text-main); }
+h1, .h1 { font-size: 32px; font-weight: 600; line-height: 1.25; }
+h2, .h2 { font-size: 28px; font-weight: 600; line-height: 1.3; }
+h3, .h3 { font-size: 24px; font-weight: 500; line-height: 1.35; }
+small, .small, .small-muted, .topbar-label, .page-kicker { font-size: 16px; font-weight: 400; }
+.form-label { font-size: 16px; font-weight: 500; color: var(--text-soft); }
+.section-title, .topbar-title { font-weight: 600; }
+
+/* Futuristic UI layer — glass, mesh gradient, teal/blue accents (design_file + reference) */
+html { scroll-behavior: smooth; }
+body {
+  background:
+    radial-gradient(ellipse 120% 85% at 100% -25%, rgba(14, 165, 233, 0.09), transparent 52%),
+    radial-gradient(ellipse 70% 55% at -15% 40%, rgba(99, 102, 241, 0.06), transparent 48%),
+    linear-gradient(180deg, #f0f9ff 0%, #f8fafc 42%, #f1f5f9 100%) !important;
+  font-family: "Inter", "Poppins", system-ui, sans-serif;
+}
+.brand-title,
+.topbar-title,
+.section-title,
+.display-6 {
+  font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+  letter-spacing: -0.025em;
+}
+.page-kicker {
+  font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+  letter-spacing: 0.05em;
+  color: #0284c7 !important;
+  -webkit-text-fill-color: #0284c7;
+}
+.sidebar {
+  background: rgba(255, 255, 255, 0.7) !important;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-right: 1px solid rgba(226, 232, 240, 0.95) !important;
+  box-shadow: 6px 0 40px rgba(15, 23, 42, 0.045);
+}
+.brand-mark {
+  background: linear-gradient(145deg, #0ea5e9 0%, #3b82f6 45%, #6366f1 100%) !important;
+  border: none !important;
+  box-shadow: 0 6px 24px rgba(59, 130, 246, 0.35), 0 0 0 1px rgba(255,255,255,0.25) inset;
+}
+.brand-mark i { color: #fff !important; }
+.nav-link.erp-link {
+  border-left: 3px solid transparent;
+  border-radius: 0 14px 14px 0;
+}
+.nav-link.erp-link.active {
+  border-left-color: #3b82f6 !important;
+  background: linear-gradient(90deg, rgba(59, 130, 246, 0.14), rgba(14, 165, 233, 0.06)) !important;
+  box-shadow: 0 0 28px rgba(59, 130, 246, 0.12);
+}
+.menu-group-label {
+  background: rgba(255, 255, 255, 0.75) !important;
+  backdrop-filter: blur(10px);
+  border-radius: 14px !important;
+  border-color: rgba(226, 232, 240, 0.95) !important;
+}
+.topbar {
+  background: rgba(255, 255, 255, 0.75) !important;
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border-radius: 16px !important;
+  border: 1px solid rgba(226, 232, 240, 0.9) !important;
+  box-shadow: 0 8px 32px rgba(15, 23, 42, 0.06), 0 0 0 1px rgba(255, 255, 255, 0.85) inset !important;
+}
+.main .input-group {
+  border-radius: 999px;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  box-shadow: 0 2px 16px rgba(15, 23, 42, 0.05);
+  background: rgba(255, 255, 255, 0.9);
+}
+.main .input-group .input-group-text,
+.main .input-group .form-control {
+  border: none !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+}
+.panel,
+.metric,
+.flow-node,
+.decision-card,
+.stat-image,
+.sidebar-footer {
+  background: rgba(255, 255, 255, 0.78) !important;
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border-radius: 16px !important;
+  border: 1px solid rgba(226, 232, 240, 0.92) !important;
+  box-shadow: 0 10px 36px rgba(15, 23, 42, 0.07), 0 0 0 1px rgba(255, 255, 255, 0.88) inset !important;
+}
+.hero-grid .panel {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.92) 0%, rgba(240, 249, 255, 0.65) 100%) !important;
+}
+.panel:hover {
+  border-color: rgba(14, 165, 233, 0.35) !important;
+  box-shadow: 0 14px 44px rgba(59, 130, 246, 0.12), 0 0 0 1px rgba(255, 255, 255, 0.92) inset !important;
+}
+.workflow-step {
+  border-radius: 999px !important;
+}
+.workflow-step.current {
+  box-shadow: 0 0 0 1px rgba(59, 130, 246, 0.45), 0 6px 22px rgba(14, 165, 233, 0.2) !important;
+}
+.btn.erp-primary {
+  border-radius: 999px !important;
+  box-shadow: 0 6px 22px rgba(59, 130, 246, 0.32);
+}
+.btn.erp-primary:hover {
+  box-shadow: 0 10px 32px rgba(59, 130, 246, 0.42) !important;
+}
+.btn.glass-btn {
+  border-radius: 999px !important;
+  background: rgba(255, 255, 255, 0.82) !important;
+  backdrop-filter: blur(8px);
+  border-color: rgba(226, 232, 240, 0.95) !important;
+}
+.table.erp tbody tr:hover {
+  background: rgba(240, 249, 255, 0.55) !important;
+}
+
+/* steelflow-erp single-page: light glass shell */
+html, body { background: transparent; }
+.app-wrapper { min-height: 100vh; }
+.steel-card,
+.kpi-card {
+  background: rgba(255, 255, 255, 0.78) !important;
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(226, 232, 240, 0.92) !important;
+  border-radius: 16px !important;
+  box-shadow: 0 10px 36px rgba(15, 23, 42, 0.07), 0 0 0 1px rgba(255, 255, 255, 0.88) inset !important;
+  color: var(--text-main) !important;
+}
+.steel-card:hover {
+  border-color: rgba(14, 165, 233, 0.35) !important;
+  transform: translateY(-2px);
+}
+.kpi-card::before { display: none; }
+.sidebar-brand {
+  color: var(--text-main) !important;
+  font-family: "JetBrains Mono", ui-monospace, monospace;
+}
+.sidebar-brand i { color: #3b82f6 !important; text-shadow: none; }
+.nav-link.steel-nav {
+  color: var(--text-soft) !important;
+  border-left: 3px solid transparent;
+  border-radius: 0 14px 14px 0;
+}
+.nav-link.steel-nav:hover {
+  background: rgba(59, 130, 246, 0.08) !important;
+  color: var(--text-main) !important;
+  transform: none;
+}
+.nav-link.steel-nav:hover i { text-shadow: none; color: #3b82f6 !important; }
+.nav-link.steel-nav.active {
+  border-left-color: #3b82f6 !important;
+  background: linear-gradient(90deg, rgba(59, 130, 246, 0.12), rgba(14, 165, 233, 0.06)) !important;
+  border: 1px solid rgba(191, 219, 254, 0.85) !important;
+  border-left-width: 3px !important;
+  color: var(--text-main) !important;
+  box-shadow: 0 0 24px rgba(59, 130, 246, 0.1);
+}
+.main-content { color: var(--text-main); }
+.topbar { color: var(--text-main); }
+.search-wrap {
+  background: rgba(255, 255, 255, 0.85) !important;
+  border: 1px solid var(--line) !important;
+  border-radius: 999px !important;
+}
+.search-wrap .form-control,
+.search-wrap .input-group-text { color: var(--text-main) !important; }
+.icon-btn {
+  background: rgba(255, 255, 255, 0.85) !important;
+  border-color: var(--line) !important;
+  color: var(--text-soft) !important;
+  border-radius: 999px !important;
+}
+.icon-btn:hover {
+  color: #3b82f6 !important;
+  border-color: rgba(59, 130, 246, 0.45) !important;
+  box-shadow: 0 4px 18px rgba(59, 130, 246, 0.15);
+  transform: translateY(-1px);
+}
+.table-steel {
+  --bs-table-color: var(--text-main) !important;
+  --bs-table-border-color: var(--line) !important;
+}
+.table-steel tbody tr:hover {
+  background: rgba(240, 249, 255, 0.55) !important;
+  transform: none;
+}
+.form-control,
+.form-select {
+  background: rgba(255, 255, 255, 0.92) !important;
+  border-color: var(--line) !important;
+  color: var(--text-main) !important;
+}
+.form-control:focus,
+.form-select:focus {
+  border-color: rgba(59, 130, 246, 0.55) !important;
+  box-shadow: 0 0 0 0.2rem rgba(59, 130, 246, 0.15);
+  background: #fff !important;
+}
+.btn-steel {
+  border-radius: 999px !important;
+  background: linear-gradient(135deg, #3b82f6, #0ea5e9) !important;
+  box-shadow: 0 6px 22px rgba(59, 130, 246, 0.32);
+}
+.btn-steel:hover {
+  box-shadow: 0 10px 28px rgba(59, 130, 246, 0.4) !important;
+}
+.flow-step {
+  background: rgba(255, 255, 255, 0.85) !important;
+  border-color: var(--line) !important;
+  color: var(--text-main) !important;
+}
+.flow-step.active {
+  border-color: rgba(59, 130, 246, 0.55) !important;
+  box-shadow: 0 0 28px rgba(59, 130, 246, 0.15);
+  background: linear-gradient(145deg, rgba(219, 234, 254, 0.5), rgba(255, 255, 255, 0.9)) !important;
+}
+.flow-step:not(:last-child)::after {
+  background: linear-gradient(90deg, rgba(59, 130, 246, 0.5), rgba(148, 163, 184, 0.25));
+}
+.tracker-step {
+  background: rgba(255, 255, 255, 0.85) !important;
+  border-color: var(--line) !important;
+  color: var(--text-soft) !important;
+}
+.tracker-step.done {
+  background: rgba(220, 252, 231, 0.85) !important;
+  color: #166534 !important;
+}
+.tracker-step.current {
+  background: rgba(145, 200, 228, 0.35) !important;
+  color: #2c5270 !important;
+}
+.small-muted { color: var(--text-soft) !important; }
+.kpi-icon {
+  background: rgba(145, 200, 228, 0.4) !important;
+  color: #4682A9 !important;
+}
+.machine-dot.idle { background: #94a3b8 !important; }
+
+
+/* Phone & tablet — touch targets, stacking, readable scale */
+@media (max-width: 991.98px) {
+  body { font-size: 17px !important; }
+  h1, .h1 { font-size: 26px !important; }
+  h2, .h2 { font-size: 22px !important; }
+  h3, .h3 { font-size: 19px !important; }
+  .main { padding: 0.75rem 1rem 1.5rem !important; }
+  .topbar {
+    flex-wrap: wrap !important;
+    gap: 0.75rem !important;
+    top: 6px !important;
+  }
+  .topbar .d-flex.align-items-center.gap-2:last-child {
+    flex: 1 1 100%;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+  }
+  .topbar .input-group {
+    max-width: 100% !important;
+    flex: 1 1 220px;
+  }
+  .sidebar {
+    max-height: 48vh;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    z-index: 1040;
+  }
+  .workflow {
+    padding: 0.35rem 0;
+    gap: 0.5rem !important;
+    scroll-snap-type: x proximity;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+  }
+  .workflow-step {
+    scroll-snap-align: start;
+    flex-shrink: 0;
+  }
+  .table-responsive {
+    -webkit-overflow-scrolling: touch;
+    border-radius: 12px;
+  }
+  .panel .d-flex.justify-content-between.align-items-center {
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+}
+@media (max-width: 575.98px) {
+  body { font-size: 16px !important; }
+  h1, .h1 { font-size: 22px !important; }
+  h2, .h2 { font-size: 19px !important; }
+  .main { padding-left: 0.65rem !important; padding-right: 0.65rem !important; }
+  .display-6 { font-size: 1.5rem !important; }
+  .erp-info-btn {
+    min-width: 44px;
+    min-height: 44px;
+    padding: 0 !important;
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+  }
+  .btn.glass-btn:not(.erp-info-btn),
+  .btn.erp-primary {
+    min-height: 44px;
+  }
+  .menu-group-label {
+    min-height: 44px;
+  }
+  .nav-link.erp-link {
+    min-height: 44px;
+    align-items: center;
+  }
+}
+
+
+@media (max-width: 991.98px) {
+  .main-content { padding: 0.75rem 0.85rem 1.5rem !important; }
+  .sidebar { max-height: 44vh; }
+  .process-track { padding-bottom: 0.35rem; }
+  .flow-step { min-width: 120px; }
+}
+@media (max-width: 575.98px) {
+  .main-content { margin-top: 88px !important; padding-left: 0.6rem !important; padding-right: 0.6rem !important; }
+  .topbar { flex-wrap: wrap; gap: 0.5rem; }
+  .search-wrap { flex: 1 1 100%; max-width: 100% !important; }
+  .icon-btn { min-width: 44px; min-height: 44px; }
+}
+
+
+
+/* ERP palette — #EDEEF7 · #91C8E4 · #749BC2 · #4682A9 */
+:root {
+  --erp-cream: #EDEEF7;
+  --erp-sky: #91C8E4;
+  --erp-blue: #749BC2;
+  --erp-steel: #4682A9;
+  --text-soft: #3d4f5c;
+  --line: #aac4d4;
+}
+body {
+  background: #EDEEF7 !important;
+  color: #1a2e3a !important;
+  line-height: 1.55 !important;
+  font-size: 18px !important;
+  animation: none !important;
+}
+.brand-title,
+.topbar-title,
+.section-title,
+.display-6,
+.page-kicker {
+  font-family: "Inter", "Poppins", system-ui, sans-serif !important;
+  letter-spacing: 0 !important;
+}
+.page-kicker {
+  color: #4682A9 !important;
+  -webkit-text-fill-color: #4682A9 !important;
+  font-weight: 600 !important;
+  font-size: 14px !important;
+  letter-spacing: 0.05em !important;
+}
+.sidebar {
+  background: #ffffff !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  border-right: 2px solid #749BC2 !important;
+  box-shadow: none !important;
+}
+.brand-mark {
+  background: #4682A9 !important;
+  box-shadow: none !important;
+  border: 1px solid #3a6d8a !important;
+}
+.nav-link.erp-link.active {
+  background: rgba(145, 200, 228, 0.38) !important;
+  box-shadow: none !important;
+  border-left-color: #4682A9 !important;
+}
+.menu-group-label {
+  background: #ffffff !important;
+  backdrop-filter: none !important;
+  border-color: #749BC2 !important;
+}
+.topbar {
+  background: #ffffff !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  border: 1px solid #749BC2 !important;
+  border-radius: 12px !important;
+  box-shadow: 0 1px 3px rgba(70, 130, 169, 0.12) !important;
+}
+.panel,
+.flow-node,
+.decision-card,
+.stat-image,
+.sidebar-footer {
+  background: #ffffff !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  border: 1px solid #aac4d4 !important;
+  border-radius: 12px !important;
+  box-shadow: 0 1px 2px rgba(70, 130, 169, 0.08) !important;
+}
+.metric {
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  border-radius: 12px !important;
+  box-shadow: 0 1px 2px rgba(70, 130, 169, 0.08) !important;
+  border: 1px solid rgba(116, 155, 194, 0.5) !important;
+  background: linear-gradient(155deg, rgba(145, 200, 228, 0.32) 0%, #ffffff 70%) !important;
+}
+.metric:nth-child(4n + 2) {
+  border-color: rgba(70, 130, 169, 0.4) !important;
+  background: linear-gradient(155deg, rgba(116, 155, 194, 0.28) 0%, #ffffff 68%) !important;
+}
+.metric:nth-child(4n + 3) {
+  border-color: rgba(145, 200, 228, 0.65) !important;
+  background: linear-gradient(155deg, rgba(70, 130, 169, 0.14) 0%, rgba(237, 238, 247, 0.5) 42%, #ffffff 88%) !important;
+}
+.metric:nth-child(4n + 4) {
+  border-color: rgba(116, 155, 194, 0.55) !important;
+  background: linear-gradient(155deg, rgba(174, 198, 228, 0.35) 0%, #ffffff 72%) !important;
+}
+.panel.h-100:has(.fs-3.fw-bold) {
+  border-color: rgba(116, 155, 194, 0.5) !important;
+  background: linear-gradient(155deg, rgba(145, 200, 228, 0.3) 0%, #ffffff 72%) !important;
+  box-shadow: 0 1px 2px rgba(70, 130, 169, 0.08) !important;
+}
+.row.g-3 > div:nth-child(4n + 2) .panel.h-100:has(.fs-3.fw-bold) {
+  border-color: rgba(70, 130, 169, 0.38) !important;
+  background: linear-gradient(155deg, rgba(116, 155, 194, 0.26) 0%, #ffffff 70%) !important;
+}
+.row.g-3 > div:nth-child(4n + 3) .panel.h-100:has(.fs-3.fw-bold) {
+  border-color: rgba(145, 200, 228, 0.65) !important;
+  background: linear-gradient(155deg, rgba(70, 130, 169, 0.12) 0%, rgba(237, 238, 247, 0.52) 45%, #ffffff 88%) !important;
+}
+.row.g-3 > div:nth-child(4n + 4) .panel.h-100:has(.fs-3.fw-bold) {
+  border-color: rgba(116, 155, 194, 0.55) !important;
+  background: linear-gradient(155deg, rgba(174, 198, 228, 0.32) 0%, #ffffff 72%) !important;
+}
+.hero-grid .panel {
+  background: #ffffff !important;
+}
+.panel:hover {
+  transform: none !important;
+  border-color: #749BC2 !important;
+  box-shadow: 0 1px 3px rgba(70, 130, 169, 0.12) !important;
+}
+.main .input-group {
+  box-shadow: none !important;
+  background: #ffffff !important;
+  border: 1px solid #749BC2 !important;
+}
+.workflow-step {
+  border: 1px solid #aac4d4 !important;
+  background: #ffffff !important;
+}
+.workflow-step.done {
+  background: #e8f5ec !important;
+  border-color: #5a9e6f !important;
+  color: #14532d !important;
+}
+.workflow-step.current {
+  box-shadow: none !important;
+  border: 2px solid #4682A9 !important;
+  background: rgba(145, 200, 228, 0.35) !important;
+  color: #2c5270 !important;
+  font-weight: 600 !important;
+}
+.btn.erp-primary {
+  box-shadow: none !important;
+  background: #4682A9 !important;
+  border-color: #3a6d8a !important;
+}
+.btn.erp-primary:hover {
+  box-shadow: none !important;
+  background: #3a6d8a !important;
+  border-color: #2f5a78 !important;
+}
+.btn.glass-btn {
+  backdrop-filter: none !important;
+  background: #ffffff !important;
+  border: 1px solid #749BC2 !important;
+}
+.table.erp thead th {
+  background: rgba(145, 200, 228, 0.45) !important;
+  color: #2c5270 !important;
+}
+.table.erp tbody tr:hover {
+  background: rgba(145, 200, 228, 0.18) !important;
+}
+.small-muted,
+.topbar-label {
+  color: #3d4f5c !important;
+}
+.form-label {
+  color: #3d4f5c !important;
+}
+.badge-soft {
+  font-weight: 600 !important;
+}
+.modal-content {
+  border: 1px solid #749BC2 !important;
+  box-shadow: 0 4px 20px rgba(70, 130, 169, 0.18) !important;
+}
+.sidebar-footer {
+  padding: 0.6rem 0.75rem !important;
+  font-size: 13px !important;
+}
+.erp-info-btn {
+  border-width: 2px !important;
+  color: #4682A9 !important;
+  border-color: #4682A9 !important;
+}
+
+/* Steelflow shell — same palette */
+html, body {
+  background: #EDEEF7 !important;
+}
+.sidebar {
+  background: #ffffff !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  border-right: 2px solid #749BC2 !important;
+  box-shadow: none !important;
+}
+.steel-card {
+  background: #ffffff !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  border: 1px solid #aac4d4 !important;
+  box-shadow: 0 1px 2px rgba(70, 130, 169, 0.08) !important;
+}
+.kpi-card {
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  border: 1px solid rgba(116, 155, 194, 0.5) !important;
+  border-radius: 12px !important;
+  box-shadow: 0 1px 2px rgba(70, 130, 169, 0.08) !important;
+  background: linear-gradient(145deg, rgba(145, 200, 228, 0.34) 0%, rgba(237, 238, 247, 0.45) 38%, #ffffff 82%) !important;
+}
+.kpi-card:hover {
+  border-color: #749BC2 !important;
+  box-shadow: 0 2px 8px rgba(70, 130, 169, 0.14) !important;
+}
+.steel-card:hover {
+  transform: none !important;
+  border-color: #749BC2 !important;
+  box-shadow: 0 1px 3px rgba(70, 130, 169, 0.12) !important;
+}
+.sidebar-brand {
+  font-family: "Inter", "Poppins", system-ui, sans-serif !important;
+}
+.sidebar-brand i {
+  color: #4682A9 !important;
+}
+.topbar {
+  background: #fff !important;
+  backdrop-filter: none !important;
+  border-color: #749BC2 !important;
+  box-shadow: 0 1px 3px rgba(70, 130, 169, 0.12) !important;
+}
+.search-wrap {
+  backdrop-filter: none !important;
+  box-shadow: none !important;
+  border-color: #749BC2 !important;
+}
+.btn-steel {
+  box-shadow: none !important;
+  background: #4682A9 !important;
+  border-color: #3a6d8a !important;
+}
+.btn-steel:hover {
+  box-shadow: none !important;
+  background: #3a6d8a !important;
+}
+.flow-step {
+  box-shadow: none !important;
+}
+.flow-step.active {
+  box-shadow: none !important;
+  border: 2px solid #4682A9 !important;
+  background: rgba(145, 200, 228, 0.35) !important;
+}
+.flow-step:not(:last-child)::after {
+  animation: none !important;
+}
+.icon-btn:hover {
+  box-shadow: none !important;
+  color: #4682A9 !important;
+  border-color: #4682A9 !important;
+}
+.nav-link.steel-nav.active {
+  box-shadow: none !important;
+  border-left-color: #4682A9 !important;
+  background: rgba(145, 200, 228, 0.38) !important;
+  border: 1px solid #91C8E4 !important;
+  border-left-width: 3px !important;
+}
+.nav-link.steel-nav:hover {
+  background: rgba(145, 200, 228, 0.22) !important;
+}
+.nav-link.steel-nav:hover i {
+  color: #4682A9 !important;
+}
+.modal-content {
+  border: 1px solid #749BC2 !important;
+  box-shadow: 0 4px 20px rgba(70, 130, 169, 0.18) !important;
+}
+.table-steel thead th {
+  background: rgba(145, 200, 228, 0.45) !important;
+}
+.table-steel tbody tr:hover {
+  background: rgba(145, 200, 228, 0.18) !important;
+}
+.kpi-icon {
+  background: rgba(145, 200, 228, 0.4) !important;
+  color: #4682A9 !important;
+}
+.form-control:focus,
+.form-select:focus {
+  border-color: #4682A9 !important;
+  box-shadow: 0 0 0 0.2rem rgba(145, 200, 228, 0.45) !important;
+}
+.tracker-step.current {
+  background: rgba(145, 200, 228, 0.35) !important;
+  color: #2c5270 !important;
+  border-color: #4682A9 !important;
+}
+
+</style>
+</head>
+<body>
+  <div class="app-wrapper">
+    <aside class="sidebar">
+      <div class="sidebar-brand">
+        <i class="bi bi-building-gear"></i>
+        <span>SteelFlow ERP</span>
+      </div>
+      <ul class="nav flex-column">
+        <li class="nav-item">
+          <a class="nav-link steel-nav active" href="#dashboard">
+            <i class="bi bi-speedometer2"></i><span class="label">Dashboard</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link steel-nav" href="#procurement">
+            <i class="bi bi-cart4"></i><span class="label">Procurement</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link steel-nav" href="#inquiry">
+            <i class="bi bi-chat-left-text"></i><span class="label">Sales Inquiry</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link steel-nav" href="#sales-orders">
+            <i class="bi bi-receipt"></i><span class="label">Sales Orders</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link steel-nav" href="#mrp">
+            <i class="bi bi-diagram-3"></i><span class="label">MRP Planning</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link steel-nav" href="#production">
+            <i class="bi bi-gear-wide-connected"></i><span class="label">Production</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link steel-nav" href="#inventory">
+            <i class="bi bi-box-seam"></i><span class="label">Inventory (RM + FG)</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link steel-nav" href="#dispatch">
+            <i class="bi bi-truck"></i><span class="label">Dispatch</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link steel-nav" href="#billing">
+            <i class="bi bi-cash-coin"></i><span class="label">Billing & GST</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link steel-nav" href="#reports">
+            <i class="bi bi-bar-chart-line"></i><span class="label">Reports</span>
+          </a>
+        </li>
+      </ul>
+    </aside>
+
+    <main class="main-content">
+      <nav class="topbar d-flex align-items-center justify-content-between gap-3">
+        <div class="d-flex align-items-center gap-2 app-label">
+          <i class="bi bi-grid-3x3-gap-fill text-info"></i>
+          <span class="fw-semibold">SteelFlow ERP</span>
+        </div>
+
+        <div class="search-wrap input-group flex-grow-1" style="max-width: 520px;">
+          <span class="input-group-text"><i class="bi bi-search"></i></span>
+          <input
+            type="text"
+            class="form-control"
+            placeholder="Search orders, coils, customers..."
+            aria-label="Search"
+          />
+        </div>
+
+        <div class="d-flex align-items-center gap-2">
+          <button class="icon-btn" title="Notifications">
+            <i class="bi bi-bell"></i>
+          </button>
+          <div class="dropdown">
+            <button
+              class="btn icon-btn d-flex align-items-center justify-content-center"
+              data-bs-toggle="dropdown"
+              aria-expanded="false"
+              title="User"
+            >
+              <i class="bi bi-person-circle"></i>
+            </button>
+            <ul class="dropdown-menu dropdown-menu-end">
+              <li><h6 class="dropdown-header">Rohan S.</h6></li>
+              <li><a class="dropdown-item" href="#">My Profile</a></li>
+              <li><a class="dropdown-item" href="#">Preferences</a></li>
+              <li><hr class="dropdown-divider" /></li>
+              <li><a class="dropdown-item" href="#">Sign Out</a></li>
+            </ul>
+          </div>
+        </div>
+      </nav>
+
+      <section id="dashboard" class="mb-4">
+        <div class="row g-3">
+          <div class="col-xl col-md-6">
+            <div class="steel-card kpi-card p-3 h-100">
+              <div class="d-flex justify-content-between align-items-start">
+                <div>
+                  <p class="small-muted mb-1">Total Orders</p>
+                  <h4 class="mb-0">1,284</h4>
+                  <small class="text-success">+8.4% this month</small>
+                </div>
+                <div class="kpi-icon"><i class="bi bi-clipboard2-data"></i></div>
+              </div>
+            </div>
+          </div>
+          <div class="col-xl col-md-6">
+            <div class="steel-card kpi-card p-3 h-100">
+              <div class="d-flex justify-content-between align-items-start">
+                <div>
+                  <p class="small-muted mb-1">Pending Dispatch</p>
+                  <h4 class="mb-0">43</h4>
+                  <small class="text-warning">12 at loading bay</small>
+                </div>
+                <div class="kpi-icon"><i class="bi bi-truck-front"></i></div>
+              </div>
+            </div>
+          </div>
+          <div class="col-xl col-md-6">
+            <div class="steel-card kpi-card p-3 h-100">
+              <div class="d-flex justify-content-between align-items-start">
+                <div>
+                  <p class="small-muted mb-1">Production Running</p>
+                  <h4 class="mb-0">18 WOs</h4>
+                  <small class="text-success">4 mills active</small>
+                </div>
+                <div class="kpi-icon"><i class="bi bi-cpu"></i></div>
+              </div>
+            </div>
+          </div>
+          <div class="col-xl col-md-6">
+            <div class="steel-card kpi-card p-3 h-100">
+              <div class="d-flex justify-content-between align-items-start">
+                <div>
+                  <p class="small-muted mb-1">RM Stock Level</p>
+                  <h4 class="mb-0">4,280 t</h4>
+                  <small class="text-warning">2 grades low</small>
+                </div>
+                <div class="kpi-icon"><i class="bi bi-box"></i></div>
+              </div>
+            </div>
+          </div>
+          <div class="col-xl col-md-6">
+            <div class="steel-card kpi-card p-3 h-100">
+              <div class="d-flex justify-content-between align-items-start">
+                <div>
+                  <p class="small-muted mb-1">FG Stock Level</p>
+                  <h4 class="mb-0">2,110 t</h4>
+                  <small class="text-success">Ready for dispatch</small>
+                </div>
+                <div class="kpi-icon"><i class="bi bi-archive"></i></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="procurement" class="mb-4">
+        <div class="steel-card p-3">
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <div>
+              <h5 class="section-title mb-0">End-to-End Steel Workflow</h5>
+              <p class="section-subtitle mb-0">Procurement Need to Billing lifecycle</p>
+            </div>
+            <span class="badge badge-soft badge-pending">Active: Production</span>
+          </div>
+
+          <div class="process-track">
+            <div class="flow-step" data-bs-toggle="tooltip" title="Raw material requirement raised">
+              <i class="bi bi-cart-plus mb-1 d-block"></i>Procurement
+            </div>
+            <div class="flow-step" data-bs-toggle="tooltip" title="Customer RFQ and specification checks">
+              <i class="bi bi-chat-left-quote mb-1 d-block"></i>Inquiry
+            </div>
+            <div class="flow-step" data-bs-toggle="tooltip" title="Commercial confirmation and SO creation">
+              <i class="bi bi-file-earmark-check mb-1 d-block"></i>SO
+            </div>
+            <div class="flow-step" data-bs-toggle="tooltip" title="Material planning and route allocation">
+              <i class="bi bi-diagram-2 mb-1 d-block"></i>MRP
+            </div>
+            <div class="flow-step active" data-bs-toggle="tooltip" title="Rolling, slitting, pickling in process">
+              <i class="bi bi-gear-wide-connected mb-1 d-block"></i>Production
+            </div>
+            <div class="flow-step" data-bs-toggle="tooltip" title="RM and FG stock reconciliation">
+              <i class="bi bi-box-seam mb-1 d-block"></i>Inventory
+            </div>
+            <div class="flow-step" data-bs-toggle="tooltip" title="Packing, loading, and weighbridge clearance">
+              <i class="bi bi-truck mb-1 d-block"></i>Dispatch
+            </div>
+            <div class="flow-step" data-bs-toggle="tooltip" title="Invoice, GST, IRN, and e-way compliance">
+              <i class="bi bi-currency-rupee mb-1 d-block"></i>Billing
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="inquiry" class="mb-4">
+        <div class="steel-card p-3">
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <h5 class="section-title mb-0">Sales Inquiry Module</h5>
+            <span id="feasibilityBadge" class="badge badge-soft badge-pending">Pending Check</span>
+          </div>
+
+          <form class="row g-3">
+            <div class="col-md-6">
+              <label class="form-label">Customer Name</label>
+              <input type="text" class="form-control" value="Shivam Infra Metals Pvt Ltd" />
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Product</label>
+              <select class="form-select">
+                <option>HR Coil</option>
+                <option>CR Sheet</option>
+                <option>GP Coil</option>
+                <option>MS Plate</option>
+              </select>
+            </div>
+            <div class="col-md-4">
+              <label class="form-label">Grade / Thickness / Width</label>
+              <input type="text" class="form-control" value="IS2062 E350 / 3.2mm / 1250mm" />
+            </div>
+            <div class="col-md-4">
+              <label class="form-label">Quantity (t)</label>
+              <input type="number" class="form-control" value="120" />
+            </div>
+            <div class="col-md-4">
+              <label class="form-label">Delivery Date</label>
+              <input type="date" class="form-control" value="2026-04-28" />
+            </div>
+            <div class="col-12 d-flex align-items-center gap-2">
+              <button id="checkBtn" type="button" class="btn btn-steel">
+                <i class="bi bi-check2-circle me-1"></i>Check Feasibility
+              </button>
+              <small class="small-muted">Checks MRP load, RM availability, and mill schedule.</small>
+            </div>
+          </form>
+        </div>
+      </section>
+
+      <section id="sales-orders" class="mb-4">
+        <div class="steel-card p-3">
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <h5 class="section-title mb-0">Sales Orders</h5>
+            <small class="small-muted">Latest confirmed and pending SOs</small>
+          </div>
+          <div class="table-responsive">
+            <table class="table table-steel align-middle">
+              <thead>
+                <tr>
+                  <th>SO Number</th>
+                  <th>Customer</th>
+                  <th>Product</th>
+                  <th>Qty (t)</th>
+                  <th>Status</th>
+                  <th>Credit Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>SO-240416-011</td>
+                  <td>Rudra Steel Traders</td>
+                  <td>CR Sheet 1.6mm</td>
+                  <td>86</td>
+                  <td><span class="badge badge-soft badge-ok">Confirmed</span></td>
+                  <td><span class="badge badge-soft badge-ok">Approved</span></td>
+                </tr>
+                <tr>
+                  <td>SO-240416-012</td>
+                  <td>Apex Engineering</td>
+                  <td>HR Coil 3.2mm</td>
+                  <td>120</td>
+                  <td><span class="badge badge-soft badge-pending">Pending</span></td>
+                  <td><span class="badge badge-soft badge-pending">Review</span></td>
+                </tr>
+                <tr>
+                  <td>SO-240416-013</td>
+                  <td>Metro Infra Build</td>
+                  <td>MS Plate 6mm</td>
+                  <td>54</td>
+                  <td><span class="badge badge-soft badge-issue">Blocked</span></td>
+                  <td><span class="badge badge-soft badge-issue">Overdue</span></td>
+                </tr>
+                <tr>
+                  <td>SO-240416-014</td>
+                  <td>Vardhan Tubes</td>
+                  <td>GP Coil 0.8mm</td>
+                  <td>73</td>
+                  <td><span class="badge badge-soft badge-ok">Confirmed</span></td>
+                  <td><span class="badge badge-soft badge-ok">Approved</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <section id="mrp" class="mb-4">
+        <div class="steel-card p-3">
+          <h5 class="section-title">MRP Planning Snapshot</h5>
+          <div class="row g-3">
+            <div class="col-md-4">
+              <div class="p-3 rounded-3" style="background: rgba(30,41,59,.65); border:1px solid rgba(148,163,184,.2);">
+                <p class="small-muted mb-1">Planned RM Requirement</p>
+                <h5 class="mb-1">1,540 t</h5>
+                <small class="text-info">HRC + Zinc + Flux</small>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="p-3 rounded-3" style="background: rgba(30,41,59,.65); border:1px solid rgba(148,163,184,.2);">
+                <p class="small-muted mb-1">Capacity Allocation</p>
+                <h5 class="mb-1">82%</h5>
+                <small class="text-success">Within threshold</small>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="p-3 rounded-3" style="background: rgba(30,41,59,.65); border:1px solid rgba(148,163,184,.2);">
+                <p class="small-muted mb-1">Procurement Trigger</p>
+                <h5 class="mb-1">7 Items</h5>
+                <small class="text-warning">Auto PO recommendations</small>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="production" class="mb-4">
+        <div class="steel-card p-3">
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <h5 class="section-title mb-0">Production Panel</h5>
+            <small class="small-muted">Real-time line and output visibility</small>
+          </div>
+
+          <div class="row g-3 mb-3">
+            <div class="col-lg-4">
+              <div class="p-3 rounded-3 h-100" style="background: rgba(30,41,59,.65); border:1px solid rgba(148,163,184,.2);">
+                <p class="small-muted mb-1">Work Orders</p>
+                <h5>WO-6194, WO-6195, WO-6196</h5>
+                <small>Shift A: 11 active / Shift B: 7 queued</small>
+              </div>
+            </div>
+            <div class="col-lg-4">
+              <div class="p-3 rounded-3 h-100" style="background: rgba(30,41,59,.65); border:1px solid rgba(148,163,184,.2);">
+                <p class="small-muted mb-1">Machine Status</p>
+                <div class="d-flex flex-column gap-2">
+                  <div><span class="machine-dot running"></span>Slitter Line #2 - Running</div>
+                  <div><span class="machine-dot running"></span>Pickling Unit #1 - Running</div>
+                  <div><span class="machine-dot idle"></span>Cut-to-Length #3 - Idle</div>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-4">
+              <div class="p-3 rounded-3 h-100" style="background: rgba(30,41,59,.65); border:1px solid rgba(148,163,184,.2);">
+                <p class="small-muted mb-1">Input vs Output Weight</p>
+                <h5 class="mb-1">Input: 980 t / Output: 934 t</h5>
+                <small class="text-warning">Scrap: 4.69%</small>
+              </div>
+            </div>
+          </div>
+
+          <div class="row g-3">
+            <div class="col-md-6">
+              <p class="small-muted mb-1">Mill Throughput</p>
+              <div class="progress">
+                <div class="progress-bar bg-info" role="progressbar" style="width: 78%;" aria-valuenow="78" aria-valuemin="0" aria-valuemax="100"></div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <p class="small-muted mb-1">Scrap Target Compliance</p>
+              <div class="progress">
+                <div class="progress-bar bg-success" role="progressbar" style="width: 92%;" aria-valuenow="92" aria-valuemin="0" aria-valuemax="100"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="inventory" class="mb-4">
+        <div class="row g-3">
+          <div class="col-xl-6">
+            <div class="steel-card p-3 h-100">
+              <div class="d-flex justify-content-between align-items-center mb-3">
+                <h5 class="section-title mb-0">RM Inventory</h5>
+                <span class="badge badge-soft badge-pending">2 Low Stock Alerts</span>
+              </div>
+              <div class="table-responsive">
+                <table class="table table-steel align-middle">
+                  <thead>
+                    <tr>
+                      <th>Item</th>
+                      <th>Batch</th>
+                      <th>Weight (t)</th>
+                      <th>QR</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>HRC Coil E350</td>
+                      <td>RM-HRC-5821</td>
+                      <td>920</td>
+                      <td><i class="bi bi-qr-code"></i></td>
+                    </tr>
+                    <tr class="low-stock">
+                      <td>Zinc Ingot 99.9%</td>
+                      <td>RM-ZN-2194</td>
+                      <td>42</td>
+                      <td><i class="bi bi-qr-code"></i></td>
+                    </tr>
+                    <tr>
+                      <td>Flux Compound</td>
+                      <td>RM-FLX-4410</td>
+                      <td>133</td>
+                      <td><i class="bi bi-qr-code"></i></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-xl-6">
+            <div class="steel-card p-3 h-100">
+              <div class="d-flex justify-content-between align-items-center mb-3">
+                <h5 class="section-title mb-0">FG Inventory</h5>
+                <span class="badge badge-soft badge-ok">Dispatch Ready</span>
+              </div>
+              <div class="table-responsive">
+                <table class="table table-steel align-middle">
+                  <thead>
+                    <tr>
+                      <th>Item</th>
+                      <th>Batch</th>
+                      <th>Weight (t)</th>
+                      <th>QR</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>CR Sheet 1.2mm</td>
+                      <td>FG-CRS-8842</td>
+                      <td>280</td>
+                      <td><i class="bi bi-qr-code"></i></td>
+                    </tr>
+                    <tr>
+                      <td>HR Coil 3.2mm</td>
+                      <td>FG-HRC-9021</td>
+                      <td>410</td>
+                      <td><i class="bi bi-qr-code"></i></td>
+                    </tr>
+                    <tr class="low-stock">
+                      <td>GP Coil 0.8mm</td>
+                      <td>FG-GP-6630</td>
+                      <td>36</td>
+                      <td><i class="bi bi-qr-code"></i></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="dispatch" class="mb-4">
+        <div class="steel-card p-3">
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <h5 class="section-title mb-0">Dispatch Module</h5>
+            <span class="badge badge-soft badge-pending">6 Trucks in Queue</span>
+          </div>
+
+          <div class="row g-3 mb-3">
+            <div class="col-md-4">
+              <div class="p-3 rounded-3" style="background: rgba(30,41,59,.65); border:1px solid rgba(148,163,184,.2);">
+                <p class="small-muted mb-1">Packing Status</p>
+                <h5 class="mb-0">34 / 43 Completed</h5>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="p-3 rounded-3" style="background: rgba(30,41,59,.65); border:1px solid rgba(148,163,184,.2);">
+                <p class="small-muted mb-1">Loading Status</p>
+                <h5 class="mb-0">18 Trucks Loaded</h5>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="p-3 rounded-3" style="background: rgba(30,41,59,.65); border:1px solid rgba(148,163,184,.2);">
+                <p class="small-muted mb-1">Weighbridge Status</p>
+                <h5 class="mb-0 text-success">Operational</h5>
+              </div>
+            </div>
+          </div>
+
+          <div class="tracker">
+            <span class="tracker-step done">Packing</span>
+            <span class="tracker-step done">Loading</span>
+            <span class="tracker-step current">Verified</span>
+            <span class="tracker-step">Dispatched</span>
+          </div>
+        </div>
+      </section>
+
+      <section id="billing" class="mb-4">
+        <div class="steel-card p-3">
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <h5 class="section-title mb-0">Billing & GST</h5>
+            <small class="small-muted">Invoice and compliance checkpoint</small>
+          </div>
+
+          <div class="row g-3">
+            <div class="col-md-3">
+              <div class="p-3 rounded-3 h-100" style="background: rgba(30,41,59,.65); border:1px solid rgba(148,163,184,.2);">
+                <p class="small-muted mb-1">Invoice Number</p>
+                <h6 class="mb-0">INV-26-04-1678</h6>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="p-3 rounded-3 h-100" style="background: rgba(30,41,59,.65); border:1px solid rgba(148,163,184,.2);">
+                <p class="small-muted mb-1">GST Status</p>
+                <h6 class="mb-0"><span class="badge badge-soft badge-ok">Filed</span></h6>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="p-3 rounded-3 h-100" style="background: rgba(30,41,59,.65); border:1px solid rgba(148,163,184,.2);">
+                <p class="small-muted mb-1">IRN Generated</p>
+                <h6 class="mb-0"><span class="badge badge-soft badge-ok">Yes</span></h6>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="p-3 rounded-3 h-100" style="background: rgba(30,41,59,.65); border:1px solid rgba(148,163,184,.2);">
+                <p class="small-muted mb-1">E-way Bill</p>
+                <h6 class="mb-0"><span class="badge badge-soft badge-pending">In Process</span></h6>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="reports">
+        <div class="steel-card p-3">
+          <h5 class="section-title mb-1">Reports</h5>
+          <p class="section-subtitle mb-0">
+            Operational trends, plant efficiency, order aging, and stock movement analytics.
+          </p>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      document.querySelectorAll("[data-bs-toggle='tooltip']").forEach(function (el) {
+        new bootstrap.Tooltip(el);
+      });
+
+      const navLinks = document.querySelectorAll(".steel-nav");
+      navLinks.forEach(function (link) {
+        link.addEventListener("click", function () {
+          navLinks.forEach(function (n) { n.classList.remove("active"); });
+          this.classList.add("active");
+        });
+      });
+
+      const checkBtn = document.getElementById("checkBtn");
+      const feasibilityBadge = document.getElementById("feasibilityBadge");
+      checkBtn.addEventListener("click", function () {
+        const feasible = Math.random() > 0.3;
+        feasibilityBadge.classList.remove("badge-pending", "badge-ok", "badge-issue");
+        if (feasible) {
+          feasibilityBadge.classList.add("badge-ok");
+          feasibilityBadge.textContent = "Feasible";
+        } else {
+          feasibilityBadge.classList.add("badge-issue");
+          feasibilityBadge.textContent = "Not Feasible";
+        }
+      });
+    });
+  </script>
+</body>
+</html>
